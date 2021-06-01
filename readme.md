@@ -17,7 +17,7 @@ npm run stylelint # проверить scss-файлы
 ### в составе:
 - SCSS
 - Pug (Jade)
-- ptylelint
+- stylelint
 - eslint
 - puglint
 - Babel
@@ -34,7 +34,6 @@ npm run stylelint # проверить scss-файлы
 >* **processJs** — отключает создание `/js/script.min.js` и отслеживание изменений в js-файлах
 >* **copyJsVendors** — отключает обработку дополнительных js-модулей и создание `/js/vendors.min.js`
 > при **`processJs`**` = false` и **`processJs`**` = false` папка `/js` не создается
----
 
 ### gh-pages
 Модуль `gh-pages` для публикации результатов верстки уже установлен

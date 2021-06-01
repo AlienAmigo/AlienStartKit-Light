@@ -33,6 +33,9 @@ function copyAssets(cb) {
     }
     cb();
   }
+  else {
+    cb();
+  }
 }
 exports.copyAssets = copyAssets;
 
@@ -85,34 +88,40 @@ exports.compileStyles = compileStyles;
 
 function processJs() {
   return src(dir.src + 'js/script.js')
-      .pipe(plumber({
-        errorHandler: function (err) {
-          console.log(err.message);
-          this.emit('end');
-        }
-      }))
-      .pipe(babel({
-          presets: ['@babel/env']
-      }))
-      .pipe(uglify())
-      .pipe(concat('script.min.js'))
-      .pipe(dest(dir.build + 'js/'))
+    .pipe(plumber({
+      errorHandler: function (err) {
+        console.log(err.message);
+        this.emit('end');
+      }
+    }))
+    .pipe(babel({
+        presets: ['@babel/env']
+    }))
+    .pipe(uglify())
+    .pipe(concat('script.min.js'))
+    .pipe(dest(dir.build + 'js/'))
 }
 exports.processJs = processJs;
 
 function copyJsVendors() {
-  options.copyJsVendors && src([
-      'node_modules/svg4everybody/dist/svg4everybody.min.js'
+  return src([
+      'node_modules/svg4everybody/dist/svg4everybody.min.js',
     ])
     .pipe(concat('vendors.min.js'))
     .pipe(dest(dir.build + 'js/'))
 }
 
 function copyImages() {
-  return src(dir.src + 'img/**/*.{jpg,jpeg,png,svg,webp,gif}')
+  return src(dir.src + 'img/**/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}')
     .pipe(dest(dir.build + 'img/'));
 }
 exports.copyImages = copyImages;
+
+function copyVideo() {
+  return src(dir.src + 'video/**/*.webm')
+    .pipe(dest(dir.build + 'video/'));
+}
+exports.copyVideo = copyVideo;
 
 function copyFonts() {
   return src(dir.src + 'fonts/*.{ttf,eot,svg,woff,woff2}')
@@ -140,37 +149,17 @@ function serve() {
     dir.src + 'pages/*.pug',
     dir.src + 'pug/*.pug',
   ], compilePug);
-  if (options.processJs) {
-    watch(dir.src + 'js/**/*.js', processJs);
-  }
-  watch(dir.src + 'img/**/*.{jpg,jpeg,png,svg,webp,gif}', copyImages);
+  watch(dir.src + 'js/*.js', processJs);
+  watch(dir.src + 'img/*.{jpg,jpeg,png,svg,webp,gif}', copyImages);
   watch([
     dir.build + '*.html',
-    // dir.build + 'js/**/*.js',
-    dir.build + 'img/**/*.{jpg,jpeg,png,svg,webp,gif}',
+    dir.build + 'js/*.js',
+    dir.build + 'img/*.{jpg,jpeg,png,svg,webp,gif}',
   ]).on('change', browserSync.reload);
 }
 
-function functionsList() {
-  let list = [
-    compileStyles,
-    compilePug,
-    copyImages,
-    copyFonts
-  ];
-  if (options.processJs) {
-    list.push(processJs);
-  };
-  if (options.copyJsVendors) {
-    list.push(copyJsVendors);
-  }
-  return list;
-};
-
 exports.default = series(
   clean,
-  parallel(
-    functionsList()
-    ),
+  parallel(compileStyles, compilePug, processJs, copyJsVendors, copyImages, copyVideo, copyFonts),
   serve
 );
