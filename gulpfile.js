@@ -2,7 +2,7 @@
 
 const { series, parallel, src, dest, watch } = require('gulp');
 const plumber = require('gulp-plumber');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const sourcemaps = require('gulp-sourcemaps');
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
@@ -17,12 +17,31 @@ const replace = require('gulp-replace');
 const ghPages = require('gh-pages');
 const path = require('path');
 const cpy = require('cpy');
+const imagemin = require('gulp-imagemin');
+const spritesmith = require('gulp.spritesmith');
+const merge = require('merge-stream');
+const buffer = require('vinyl-buffer');
 
 const nth = {};
 nth.config = require('./config.js');
 
 const dir = nth.config.dir;
 const options = nth.config.options;
+
+/**
+ * Проверка существования файла или папки
+ * @param  {string} path      Путь до файла или папки
+ * @return {boolean}
+ */
+ function fileExist(filepath){
+  let flag = true;
+  try{
+    fs.accessSync(filepath, fs.F_OK);
+  }catch(e){
+    flag = false;
+  }
+  return flag;
+}
 
 // копирование дополнительных файлов в проект
 function copyAssets(cb) {
@@ -129,6 +148,36 @@ function copyFonts() {
 }
 exports.copyFonts = copyFonts;
 
+// создание png-спрайта
+function generatePngSprite(cb) {
+  let spritePngPath = `${dir.src}sprite-png/`;
+  if (!fileExist(spritePngPath+'*.{jpg,jpeg,png,webp,gif}')) {
+    let spriteData = src(`${spritePngPath}/*.{jpg,jpeg,png,webp,gif}`)
+    .pipe(spritesmith({
+        imgName: 'png-sprite.png', // название собраного спрайта
+        cssName: 'png-sprite.scss', // название css файла
+        padding: 4,
+        imgPath: '../img/png-sprite.png',
+
+    }));
+    let styleStream = spriteData.css
+    .pipe(dest(`${dir.src}scss/`));
+
+    let imgStream = spriteData.img
+    .pipe(buffer())
+    .pipe(imagemin([ imagemin.optipng({ optimizationLevel: 5 }) ]))
+    .pipe(dest(`${dir.src}/img/`))
+    .pipe(dest(`${dir.build}/img/`));
+
+    return merge(imgStream, styleStream);
+  }
+  else {
+    cb();
+  };
+}
+
+exports.generatePngSprite = generatePngSprite;
+
 function clean() {
   return del(dir.build)
 }
@@ -147,9 +196,10 @@ function serve() {
   ], compileStyles);
   watch([
     dir.src + 'pages/*.pug',
-    dir.src + 'pug/*.pug',
+    dir.src + 'pug/**/*.pug',
   ], compilePug);
-  watch(dir.src + 'js/*.js', processJs);
+  watch(dir.src + 'js/**/*.js', processJs);
+  watch(dir.src + 'png-sprite/**/*.{jpg,jpeg,png,webp,gif}', generatePngSprite);
   watch(dir.src + 'img/*.{jpg,jpeg,png,svg,webp,gif}', copyImages);
   watch([
     dir.build + '*.html',
@@ -160,6 +210,6 @@ function serve() {
 
 exports.default = series(
   clean,
-  parallel(compileStyles, compilePug, processJs, copyJsVendors, copyImages, copyVideo, copyFonts),
+  parallel(compileStyles, compilePug, processJs, copyJsVendors, generatePngSprite, copyImages, copyVideo, copyFonts),
   serve
 );
