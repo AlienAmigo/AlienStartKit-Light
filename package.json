@@ -51,6 +51,7 @@
     "stylelint-selector-bem-pattern": "^2.0.0"
   },
   "dependencies": {
+    "cpy": "^8.1.2",
     "gulp.spritesmith": "^6.12.1",
     "merge-stream": "^1.0.1",
     "module": "^1.1.0",
