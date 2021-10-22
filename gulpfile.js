@@ -137,13 +137,13 @@ function copyImages() {
 exports.copyImages = copyImages;
 
 function copyVideo() {
-  return src(dir.src + 'video/**/*.webm')
+  return src(dir.src + 'video/**/*{.mp4,.avi,.webm}')
     .pipe(dest(dir.build + 'video/'));
 }
 exports.copyVideo = copyVideo;
 
 function copyFonts() {
-  return src(dir.src + 'fonts/*.{ttf,eot,svg,woff,woff2}')
+  return src(dir.src + 'fonts/**/*.{ttf,eot,svg,woff,woff2}')
     .pipe(dest(dir.build + 'fonts/'));
 }
 exports.copyFonts = copyFonts;
@@ -200,11 +200,11 @@ function serve() {
   ], compilePug);
   watch(dir.src + 'js/**/*.js', processJs);
   watch(dir.src + 'png-sprite/**/*.{jpg,jpeg,png,webp,gif}', generatePngSprite);
-  watch(dir.src + 'img/*.{jpg,jpeg,png,svg,webp,gif}', copyImages);
+  watch(dir.src + 'img/**/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}', copyImages);
   watch([
     dir.build + '*.html',
     dir.build + 'js/*.js',
-    dir.build + 'img/*.{jpg,jpeg,png,svg,webp,gif}',
+    dir.build + 'img/**/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}',
   ]).on('change', browserSync.reload);
 }
 
