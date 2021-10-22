@@ -6,6 +6,8 @@ const sass = require('gulp-sass')(require('sass'));
 const sourcemaps = require('gulp-sourcemaps');
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
+const postcssAnimation  = require('postcss-animation');
+const postcssFlexbugs = require('postcss-flexbugs-fixes');
 const browserSync = require('browser-sync').create();
 const del = require('del');
 const babel = require('gulp-babel');
@@ -97,6 +99,8 @@ function compileStyles() {
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(postcss([
+      postcssAnimation(),
+      postcssFlexbugs(),
       autoprefixer({overrideBrowserslist: ['last 2 version']}),
     ]))
     .pipe(sourcemaps.write('/'))

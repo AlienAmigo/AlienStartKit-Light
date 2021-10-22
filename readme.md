@@ -16,6 +16,12 @@ npm run stylelint # проверить scss-файлы
 ## О сборке:
 ### в составе:
 - SCSS
+- PostCSS
+  - Autoprefixer
+  - PostCSS Flexbugs Fixes
+    https://github.com/luisrudge/postcss-flexbugs-fixes
+  - PostCSS animation
+    https://github.com/zhouwenbin/postcss-animation
 - Pug (Jade)
 - stylelint
 - eslint
