@@ -7,6 +7,7 @@
     "puglint": "glob-exec \"src/**/*.pug\" -- \"pug-lint {{files.join(' ')}}\"",
     "stylelint": "stylelint \"src/scss/**/*.scss\" --syntax=scss",
     "start": "gulp",
+    "build": "gulp build",
     "lint-staged": "lint-staged"
   },
   "author": "Pyotr Ryzhov",
