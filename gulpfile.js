@@ -241,13 +241,11 @@ exports.build = series(
     compilePug,
     processJs,
     copyJsVendors,
-    generateSVGSprite,
     generatePngSprite,
     copyImages,
     copyVideo,
     copyFonts,
     copyAssets,
-    copyData
   )
 );
 
@@ -261,7 +259,8 @@ exports.default = series(
     generatePngSprite,
     copyImages,
     copyVideo,
-    copyFonts
+    copyFonts,
+    copyAssets
   ),
   serve
 );
