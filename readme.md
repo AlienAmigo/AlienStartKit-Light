@@ -5,6 +5,7 @@
 ```bash
 npm i             # установить зависимости
 npm start         # запустить сервер разработки (остановить: Ctrl+C)
+npm build         # запустить сборку проекта
 npm run bemlint   # проверить html-файлы папки build на соответствие BEM
 npm run puglint   # проверить pug-файлы
 npm run stylelint # проверить scss-файлы
@@ -15,7 +16,7 @@ npm run stylelint # проверить scss-файлы
 ---
 ## О сборке:
 ### в составе:
-- SCSS
+- Sass (SCSS)
 - PostCSS
   - Autoprefixer
   - PostCSS Flexbugs Fixes
@@ -28,6 +29,7 @@ npm run stylelint # проверить scss-файлы
 - puglint
 - Babel
 - GitPages
+- gulp.spritesmith
 
 ### файл config.js
 
