@@ -156,7 +156,11 @@ function copyJsVendors() {
 }
 
 function copyImages() {
-  return src(dir.src + "img/**/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}").pipe(
+  return src([
+    dir.src + "img/**/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}",
+    "!"+dir.src+"img/spritesmith/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}"
+  ]
+    ).pipe(
     dest(dir.build + "img/")
   );
 }
@@ -177,15 +181,16 @@ function copyFonts() {
 exports.copyFonts = copyFonts;
 
 // создание png-спрайта
+// создание png-спрайта
 function generatePngSprite(cb) {
-  let spritePngPath = `${dir.src}sprite-png/`;
+  let spritePngPath = `${dir.src}img/spritesmith/`;
   if (!fileExist(spritePngPath + "*.{jpg,jpeg,png,webp,gif}")) {
-    let spriteData = src(`${spritePngPath}/*.{jpg,jpeg,png,webp,gif}`).pipe(
+    let spriteData = src(`${spritePngPath}*.{jpg,jpeg,png,webp,gif}`).pipe(
       spritesmith({
-        imgName: "png-sprite.png", // название собраного спрайта
-        cssName: "png-sprite.scss", // название css файла
+        imgName: "sprite-png.png", // название собраного спрайта
+        cssName: "_sprite-png.scss", // название css файла
         padding: 4,
-        imgPath: "../img/png-sprite.png",
+        imgPath: "../img/sprite-png.png",
       })
     );
     let styleStream = spriteData.css.pipe(dest(`${dir.src}scss/`));
@@ -193,8 +198,8 @@ function generatePngSprite(cb) {
     let imgStream = spriteData.img
       .pipe(buffer())
       .pipe(imagemin([imagemin.optipng({ optimizationLevel: 5 })]))
-      .pipe(dest(`${dir.src}/img/`))
-      .pipe(dest(`${dir.build}/img/`));
+      .pipe(dest(`${dir.build}img/`))
+      .pipe(dest(`${dir.src}img/`));
 
     return merge(imgStream, styleStream);
   } else {
@@ -222,9 +227,11 @@ function serve() {
   );
   watch([dir.src + "pages/*.pug", dir.src + "pug/**/*.pug"], compilePug);
   watch(dir.src + "js/**/*.js", processJs);
-  watch(dir.src + "png-sprite/**/*.{jpg,jpeg,png,webp,gif}", generatePngSprite);
-  watch(
+  watch(dir.src + "img/spritesmith/*.{jpg,jpeg,png,webp,gif}", generatePngSprite);
+  watch([
     dir.src + "img/**/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}",
+    "!"+dir.src+"img/spritesmith/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}"
+  ],
     copyImages
   );
   watch([
