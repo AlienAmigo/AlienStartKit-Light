@@ -1,4 +1,6 @@
+@use 'sass:math'; /* stylelint-disable-line at-rule-no-unknown */
 // псевдоблок
+
 @mixin pseudo($display: block, $pos: absolute, $content: '') {
   content: $content;
   display: $display;
@@ -17,13 +19,13 @@
     border-left: $size solid transparent;
     border-right: $size solid transparent;
     border-top: $size solid $color;
-    margin-top: 0 - round( $size / 2.5 );
+    margin-top: 0 - round( math.div($size, 2.5) );
   }
   @else if $direction == up {
     border-left: $size solid transparent;
     border-right: $size solid transparent;
     border-bottom: $size solid $color;
-    margin-bottom: 0 - round( $size / 2.5 );
+    margin-bottom: 0 - round( math.div($size, 2.5) );
   }
   @else if $direction == right {
     border-top: $size solid transparent;
@@ -142,7 +144,7 @@
   &:hover {
     overflow: hidden;
 
-    & img {
+    & img { /* stylelint-disable-line plugin/selector-bem-pattern */
       transform: scale(1.025);
       transition: transform 0.25s ease-in;
     }

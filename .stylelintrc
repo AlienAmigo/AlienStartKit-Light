@@ -541,7 +541,7 @@
     #   "message": "Вкладывать такой селектор нельзя"
     # }],
     "selector-pseudo-class-disallowed-list": [["/^nth-/", ], {
-      # "severity": "warning",
+      "severity": "warning",
       "message": "Псевдокласс такой использовать не стоит"
     }],
     "value-list-max-empty-lines": [0, {

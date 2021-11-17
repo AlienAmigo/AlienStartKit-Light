@@ -128,31 +128,40 @@ function compileStyles() {
 }
 exports.compileStyles = compileStyles;
 
-function processJs() {
-  return src(dir.src + "js/script.js")
-    .pipe(
-      plumber({
-        errorHandler: function (err) {
-          console.log(err.message);
-          this.emit("end");
-        },
-      })
-    )
-    .pipe(
-      babel({
-        presets: ["@babel/env"],
-      })
-    )
-    .pipe(uglify())
-    .pipe(concat("script.min.js"))
-    .pipe(dest(dir.build + "js/"));
+function processJs(cb) {
+  if (options.processJs)
+    return src(dir.src + "js/script.js")
+      .pipe(
+        plumber({
+          errorHandler: function (err) {
+            console.log(err.message);
+            this.emit("end");
+          },
+        })
+      )
+      .pipe(
+        babel({
+          presets: ["@babel/env"],
+        })
+      )
+      .pipe(uglify())
+      .pipe(concat("script.min.js"))
+      .pipe(dest(dir.build + "js/"));
+    else {
+      cb();
+    }
 }
 exports.processJs = processJs;
 
-function copyJsVendors() {
-  return src(["node_modules/svg4everybody/dist/svg4everybody.min.js"])
-    .pipe(concat("vendors.min.js"))
-    .pipe(dest(dir.build + "js/"));
+function copyJsVendors(cb) {
+  if (options.copyJsVendors) {
+    return src(["node_modules/svg4everybody/dist/svg4everybody.min.js"])
+      .pipe(concat("vendors.min.js"))
+      .pipe(dest(dir.build + "js/"));
+  }
+  else {
+    cb();
+  };
 }
 
 function copyImages() {
