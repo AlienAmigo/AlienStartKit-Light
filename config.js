@@ -8,6 +8,7 @@ let config = {
     copyAssets: false,
     processJs: true,
     copyJsVendors: true,
+    typescript: true,
   },
 
   // переменные директорий проекта

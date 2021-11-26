@@ -23,6 +23,7 @@ const imagemin = require("gulp-imagemin");
 const spritesmith = require("gulp.spritesmith");
 const merge = require("merge-stream");
 const buffer = require("vinyl-buffer");
+const ts = require("gulp-typescript");
 
 const nth = {};
 nth.config = require("./config.js");
@@ -48,6 +49,8 @@ function fileExist(filepath) {
 // копирование дополнительных файлов в проект
 function copyAssets(cb) {
   if (options.copyAssets) {
+    if (!fileExist(dir.src + "ts/")) {
+    }
     for (let item in nth.config.addAssets) {
       let dest = `${dir.build}${nth.config.addAssets[item]}`;
       cpy(item, dest);
@@ -58,6 +61,26 @@ function copyAssets(cb) {
   }
 }
 exports.copyAssets = copyAssets;
+
+// компилирование TypeScript
+function compileTS(cb) {
+  if (options.typescript) {
+    return src(dir.src + "ts/**/*.ts")
+      .pipe(
+        ts({
+          noImplicitAny: false,
+          lib: [],
+          target: "es5",
+          removeComments: false,
+        })
+      )
+      .pipe(dest(dir.src + "js/"));
+    cb();
+  } else {
+    cb();
+  }
+}
+exports.compileTS = compileTS;
 
 // отправка папки build на gh-pages
 function deploy(cb) {
@@ -147,9 +170,9 @@ function processJs(cb) {
       .pipe(uglify())
       .pipe(concat("script.min.js"))
       .pipe(dest(dir.build + "js/"));
-    else {
-      cb();
-    }
+  else {
+    cb();
+  }
 }
 exports.processJs = processJs;
 
@@ -158,20 +181,16 @@ function copyJsVendors(cb) {
     return src(["node_modules/svg4everybody/dist/svg4everybody.min.js"])
       .pipe(concat("vendors.min.js"))
       .pipe(dest(dir.build + "js/"));
-  }
-  else {
+  } else {
     cb();
-  };
+  }
 }
 
 function copyImages() {
   return src([
     dir.src + "img/**/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}",
-    "!"+dir.src+"img/spritesmith/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}"
-  ]
-    ).pipe(
-    dest(dir.build + "img/")
-  );
+    "!" + dir.src + "img/spritesmith/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}",
+  ]).pipe(dest(dir.build + "img/"));
 }
 exports.copyImages = copyImages;
 
@@ -235,16 +254,24 @@ function serve() {
     compileStyles
   );
   watch([dir.src + "pages/*.pug", dir.src + "pug/**/*.pug"], compilePug);
+  watch(dir.src + "ts/**/*.ts", compileTS);
   watch(dir.src + "js/**/*.js", processJs);
-  watch(dir.src + "img/spritesmith/*.{jpg,jpeg,png,webp,gif}", generatePngSprite);
-  watch([
-    dir.src + "img/**/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}",
-    "!"+dir.src+"img/spritesmith/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}"
-  ],
+  watch(
+    dir.src + "img/spritesmith/*.{jpg,jpeg,png,webp,gif}",
+    generatePngSprite
+  );
+  watch(
+    [
+      dir.src + "img/**/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}",
+      "!" +
+        dir.src +
+        "img/spritesmith/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}",
+    ],
     copyImages
   );
   watch([
     dir.build + "*.html",
+    dir.build + "ts/*.ts",
     dir.build + "js/*.js",
     dir.build + "img/**/*.{jpg,jpeg,png,svg,webp,gif,webmanifest}",
   ]).on("change", browserSync.reload);
@@ -253,6 +280,7 @@ function serve() {
 exports.build = series(
   clean,
   parallel(
+    options.typescript && compileTS,
     compileStyles,
     compilePug,
     processJs,
@@ -261,13 +289,14 @@ exports.build = series(
     copyImages,
     copyVideo,
     copyFonts,
-    copyAssets,
-  )
+    copyAssets
+    )
 );
 
 exports.default = series(
   clean,
   parallel(
+    options.typescript && compileTS,
     compileStyles,
     compilePug,
     processJs,
