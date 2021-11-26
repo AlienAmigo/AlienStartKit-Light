@@ -69,8 +69,8 @@ function compileTS(cb) {
       .pipe(
         ts({
           noImplicitAny: false,
-          lib: [],
-          target: "es5",
+          lib: ["ES6", "ES5", "DOM"],
+          target: "ES6",
           removeComments: false,
         })
       )
@@ -280,7 +280,7 @@ function serve() {
 exports.build = series(
   clean,
   parallel(
-    options.typescript && compileTS,
+    compileTS,
     compileStyles,
     compilePug,
     processJs,
@@ -290,13 +290,13 @@ exports.build = series(
     copyVideo,
     copyFonts,
     copyAssets
-    )
+  )
 );
 
 exports.default = series(
   clean,
   parallel(
-    options.typescript && compileTS,
+    compileTS,
     compileStyles,
     compilePug,
     processJs,
