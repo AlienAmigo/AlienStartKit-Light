@@ -280,7 +280,7 @@ function serve() {
 exports.build = series(
   clean,
   parallel(
-    options.typescript && compileTS,
+    compileTS,
     compileStyles,
     compilePug,
     processJs,
@@ -296,7 +296,7 @@ exports.build = series(
 exports.default = series(
   clean,
   parallel(
-    options.typescript && compileTS,
+    compileTS,
     compileStyles,
     compilePug,
     processJs,
