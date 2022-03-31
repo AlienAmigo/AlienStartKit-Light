@@ -15,7 +15,7 @@ npm run stylelint # проверить scss-файлы
 
 ---
 ## О сборке:
-### в составе:
+### В составе:
 - Sass (SCSS)
 - PostCSS
   - Autoprefixer
@@ -36,12 +36,31 @@ npm run stylelint # проверить scss-файлы
 Файл **`config.js`** содержит глобальные настройки проекта в объекте `config`:
 
 > **dir** — переменные директорий проекта
+> 
 > **addAssets** — дополнительные файлы проекта
+> 
 > **options** — флаги, если нужно отключить какую-то часть сборки (например, в случае полной ненадобности js или сторонних модулей (Vendors)):
 >* **copyAssets** — отключает копирование дополнительных файлов проекта
 >* **processJs** — отключает создание `/js/script.min.js` и отслеживание изменений в js-файлах
 >* **copyJsVendors** — отключает обработку дополнительных js-модулей и создание `/js/vendors.min.js`
 > при **`processJs`**` = false` и **`processJs`**` = false` папка `/js` не создается
+
+### Fonts (Шрифты)
+Все шрифты лежат в папке `/fonts`.
+<Конвертер шрифтов: https://www.fontsquirrel.com/tools/webfont-generator
+или google-webfonts-helper: https://google-webfonts-helper.herokuapp.com/fonts
+
+#### Памятка по *font-weight*:
+
+- **100** — Thin (Hairline)
+- **200** — Extra Light (Ultra Light)
+- **300** — Light
+- **400** — Regular (Normal)
+- **500** — Medium
+- **600** — Semi Bold (Demi Bold)
+- **700** — Bold
+- **800** — Extra Bold (Ultra Bold)
+- **900** — Black (Heavy)
 
 ### gh-pages
 Модуль `gh-pages` для публикации результатов верстки уже установлен
