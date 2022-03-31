@@ -4,7 +4,7 @@ mixin video(vid, cover, autoplay: false)
     video.video.video__hidden(loop='loop', width='850', autoplay=`${autoplay ? 'autoplay' : '0'}`, control)
       source(src=`video/${vid}`, type='video/webm')
     .video__cover
-      img(src=`img/${cover}` alt='')
+      img(src=`img/${cover}`, alt='')
 
 
 mixin ytvideo(id, img)
@@ -25,3 +25,17 @@ mixin popup
     .popup__body
       .popup__close
       .popup__inner
+
+//- парсинг строки на абзацы
+mixin splitParagraphs(str, cl, listCl)
+  - let myParagraphs = str.split('\n')
+  - for (p in myParagraphs)
+    - let myStr = myParagraphs[p].trim()
+    - let myRegExp = /(^(\d+\.)+\)?)|(^[\-–—•])|(^[a-zA-Zа-яА-Я][\.\)])/
+    - let myNum = myStr.match(myRegExp)
+    - if (myNum)
+      p(class=listCl)
+        span= myNum[0].replace(/[\-–—]/, '—')
+        = myStr.replace(myNum[0], '').trim()
+    - else
+      p(class=cl)= myStr
