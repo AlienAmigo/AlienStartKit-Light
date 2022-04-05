@@ -16,20 +16,19 @@ npm run stylelint # проверить scss-файлы
 ---
 ## О сборке:
 ### В составе:
-- Sass (SCSS)
-- PostCSS
-  - Autoprefixer
-  - PostCSS Flexbugs Fixes
-    https://github.com/luisrudge/postcss-flexbugs-fixes
-  - PostCSS animation
-    https://github.com/zhouwenbin/postcss-animation
-- Pug (Jade)
-- stylelint
-- eslint
-- puglint
-- Babel
-- GitPages
-- gulp.spritesmith
+- [Sass (SCSS)](https://sass-lang.com)
+- [PostCSS](https://postcss.org)
+  - [Autoprefixer](https://github.com/postcss/autoprefixer)
+  - [PostCSS Flexbugs Fixes](https://github.com/luisrudge/postcss-flexbugs-fixes)
+  - [PostCSS animation](https://github.com/zhouwenbin/postcss-animation)
+- [Pug (Jade)](https://pugjs.org)
+- [Stylelint](https://stylelint.io)
+- [ESLint](https://eslint.org)
+- [pug-lint](https://github.com/pugjs/pug-lint)
+- [Prettier](https://prettier.io)
+- [Babel](https://babeljs.io)
+- [GitPages](https://pages.github.com)
+- [gulp.spritesmith](https://github.com/twolfson/gulp.spritesmith)
 
 ### файл config.js
 
@@ -47,7 +46,8 @@ npm run stylelint # проверить scss-файлы
 
 ### Fonts (Шрифты)
 Все шрифты лежат в папке `/fonts`.
-<Конвертер шрифтов: https://www.fontsquirrel.com/tools/webfont-generator
+
+Конвертер шрифтов: https://www.fontsquirrel.com/tools/webfont-generator
 или google-webfonts-helper: https://google-webfonts-helper.herokuapp.com/fonts
 
 #### Памятка по *font-weight*:
