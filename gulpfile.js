@@ -61,7 +61,7 @@ exports.copyAssets = copyAssets;
 
 // отправка папки build на gh-pages
 function deploy(cb) {
-  ghPages.publish(path.join(process.cwd(), "./build"), cb);
+  ghPages.publish(path.join(process.cwd(), dir.build), cb);
 }
 exports.deploy = deploy;
 
